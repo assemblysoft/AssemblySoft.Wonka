@@ -1,0 +1,67 @@
+@model IEnumerable<AssemblySoft.WonkaBuild.Models.TaskHistory>
+
+@if (Model != null)
+{
+
+    <table class="table table-striped table-bordered table-hover table-condensed">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Task.Task)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Task.Path)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            
+            <th>
+               
+            </th>
+            
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr class="task-row">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Task.Task)
+                </td>
+               
+                <td>
+
+                    @if (item.Summary != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.Summary.BuildLog)
+                    }
+                    else
+                    {
+                        @Html.Raw("N/A")
+                    }
+                </td>
+                <td>
+                    @Html.Raw(item.Status)                    
+                </td>
+                <td>
+                    <a class="btn btn-primary task-info" href="#" data-toggle="modal" data-target="#taskDefModal">
+                        <div><i class="fa fa-info-circle fa-2x"></i></div>
+                    </a>
+
+                    <div class="info-header" style="display:none">
+                        @item.Task.Task Workflow History
+                    </div>
+                    <div class="info-body" style="display:none">
+                        <xmp>
+                            @Html.Raw(item.Task.Definition)
+                        </xmp>
+                    </div>
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+else
+{
+    <h3>No Tasks history available </h3>
+}

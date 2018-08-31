@@ -1,0 +1,31 @@
+.modal.large {
+    width: 80%; /* respsonsive width */
+    margin-left: -40%; /* width/2) */
+}
+
+.task-list {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;    
+    counter-reset: line-number;
+    max-height: 210px;
+    overflow-y: auto;
+    -moz-transition: 1s;
+    -ms-transition: 1s;
+    -o-transition: 1s;
+    -webkit-transition: 1s;
+    transition: 1s;
+    transition: height 0.2s ease-out;
+}
+
+.modal-content {
+            height: 650px;
+            overflow: auto;
+        }
+
+
+.completed {
+    color: rgba(100, 199, 4, 0.82);    
+}
+
+.faulted{
+    color:crimson
+}

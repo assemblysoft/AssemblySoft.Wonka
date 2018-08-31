@@ -1,0 +1,19 @@
+﻿@model AssemblySoft.WonkaBuild.Models.TaskInformationModel
+
+<div id="taskInformation">
+    @if (Model != null)
+    {
+        <p>
+            Name: @Model.TaskName Start: @Model.TasksStartTime  Path:@Model.TasksPath
+        </p>
+    }
+    else
+    {
+        <h2>Unable to load Task Information</h2>
+    }
+</div>
+
+<div id="progressDiv">
+    @*<i class="fa fa-refresh fa-spin fa-2x fa-fw"></i>
+    <span class="sr-only">Running Tasks...</span>*@
+</div>

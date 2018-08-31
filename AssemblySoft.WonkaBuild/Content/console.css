@@ -1,0 +1,20 @@
+﻿.console {
+    font-family: Consolas,"Lucida Console",Monaco,"Courier New",Courier,monospace;
+    color: #eee;
+    background-color: #012456;
+    padding: 10px;
+    counter-reset: line-number;
+    height: 400px;
+    overflow-y: auto;
+}
+
+    .console .line {
+        width: 80%;
+        display: inline-block;
+        clear: both;
+        white-space: pre-wrap;
+    }
+
+        .console .line:hover, .console .line:hover * {
+            background-color: #01357e
+        }

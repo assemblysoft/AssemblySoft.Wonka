@@ -1,0 +1,21 @@
+@model AssemblySoft.WonkaBuild.Models.TaskSummaryModel
+
+<div id="progressDiv">
+    <i class="fa fa-info" aria-hidden="true"></i>
+    <span class="sr-only">Summary details...</span>
+    @if (Model != null)
+    {
+        <h3>Label:</h3>
+        <p>@Model.BuildLabel</p>
+
+        <h3>Build Time:</h3>
+        <p>@Model.BuildTime</p>
+
+        <h3>Wonka Log:</h3>
+        <p>@Model.BuildLog</p>
+    }
+    else
+    {
+        <h2>Unable to load Task Summary</h2>
+    }
+</div>

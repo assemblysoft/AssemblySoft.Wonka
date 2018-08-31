@@ -1,0 +1,168 @@
+
+@{
+    ViewData["Title"] = "Wonka Tasks";
+}
+
+<div id="divResult">
+</div>
+<div style="margin-top:10px; margin-bottom:10px">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#build">Latest Tasks <i class="fa fa-cog fa-2x" aria-hidden="true"></i></a></li>
+        <li><a class="tasks-all" data-toggle="tab" href="#all">All Tasks <i class="fa fa-cogs fa-2x" aria-hidden="true"></i></a></li>
+        <li><a class="task-history" data-toggle="tab" href="#history">History <i class="fa fa-history fa-2x" aria-hidden="true"></i></a></li>
+        <li><a class="task-debug" data-toggle="tab" href="#debug">Debug <i class="fa fa-bug fa-2x" aria-hidden="true"></i></a></li>
+    </ul>
+</div>
+<div class="tab-content">
+    <div id="build" class="tab-pane fade in active">
+
+        <div id="tasksDiv" class="task-list">
+            <div id="taskList">
+            </div>
+        </div>
+
+        <!-- Idle, Running, Complete etc.-->
+        <div id="status">
+            <h4>Status: Idle</h4>
+        </div>
+        <!-- - X OK-->
+        <div id="progressSpinner">
+            <div id="progressDiv">
+            </div>
+        </div>
+        <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                            Console
+                        </a>
+                        <a href="#" class="btn btn-default clearConsole"><i class="fa fa-eraser" aria-hidden="true"></i></a>
+                    </h4>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div class="console">
+                            <ul id="messages"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                            Build Log
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse2" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div id="buildLogDiv">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="all" class="tab-pane fade">
+        <div id="allTasksDiv">
+            <div id="allTasks">
+            </div>
+        </div>
+    </div>
+
+    <div id="history" class="tab-pane fade">
+        <div id="tasksHistoryDiv">
+            <div id="taskHistory">
+            </div>
+        </div>
+    </div>
+   
+    <div id="debug" class="tab-pane fade">
+            <div>Debug Info</div>
+        </div>
+</div>
+
+<!-- Modal -->
+<div id="taskDefModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg" style="width:65%;">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Task Information</h4>
+            </div>
+            <div class="modal-body">
+                <div id="taskDefinitionModalBody">
+                    <p>Task Information.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--end modal-->
+
+<script>
+function CheckStatus() {
+    var options = {};
+    options.url = '@Url.Action("GetStatus", "Build")';
+    options.type = "POST";
+    options.dataType = "json";
+    options.contentType = "application/json";
+    options.success = function (data) {
+
+    $("#status").html("<h4>Status: " + data.status + "</h2> ");
+
+    var $progress = $('#progressDiv');
+
+    if (data.status == 'Idle' || data.status == 'Running') {
+        setTimeout(CheckStatus, 2000);
+    }
+    else {
+
+
+        if (data.status == 'Completed') {
+            $.get('/build/taskscomplete', function (data) {
+                $progress.replaceWith(data);
+
+                $('.active-task').removeClass('fa-refresh fa-spin active-task').addClass('fa-check').addClass('completed');
+                $('.run-task').removeClass('disabled');
+
+
+            });
+        }
+        else {
+            $.get('/build/tasksfail', function (data) {
+                $progress.replaceWith(data);
+
+                $('.active-task').removeClass('fa-refresh fa-spin active-task').addClass('fa-times').addClass('faulted');
+                $('.run-task').removeClass('disabled');
+
+            });
+        }
+
+        $rows = $('table.table tr');
+        $rows.removeClass('.active');
+        $rows.show(3000);
+
+        var $buildLog = $('#buildLogDiv');
+        $.get('/build/taskssummary', function (data) {
+            $buildLog.replaceWith(data);
+
+        });
+
+    }
+    };
+
+    $.ajax(options)
+    }
+
+</script>
