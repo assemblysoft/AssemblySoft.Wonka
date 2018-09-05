@@ -53,6 +53,13 @@ namespace AssemblySoft.WonkaBuild.Controllers
             }
         }
 
+
+        [HttpGet]
+        public string Ping(string msg)
+        {
+            return string.Format("Ping: {0}",msg);
+        }
+
         [HttpGet]        
         public HttpResponseMessage Definition(string name, string sourceStore="directory")
         {
