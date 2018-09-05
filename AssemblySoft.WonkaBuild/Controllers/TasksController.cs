@@ -57,11 +57,27 @@ namespace AssemblySoft.WonkaBuild.Controllers
         [HttpGet]
         public string Ping(string msg)
         {
+            StringBuilder builder = new StringBuilder();
+
             var storageConnectionString = WebConfigurationManager.AppSettings["storageConnectionString"];
             if (string.IsNullOrEmpty(storageConnectionString))
                 storageConnectionString = "unable to retrieve";
 
-            return string.Format("Ping: {0} {1}",msg,storageConnectionString);
+            try
+            {
+
+                taskSvc = new BlobTaskService();
+                builder.Append("svc init");
+
+                var model = taskSvc.LoadTaskDefinitionsOrderByLatestVersion().Where(e => e.Task.ToLower() == "Developer-Setup").FirstOrDefault();
+                builder.Append("model init");
+            }
+            catch(Exception e)
+            {
+                builder.Append(e.Message);
+            }
+
+            return string.Format("Ping: {0} {1}",msg,builder.ToString());
         }
 
         [HttpGet]        
