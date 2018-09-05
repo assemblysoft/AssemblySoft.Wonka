@@ -35,6 +35,14 @@ namespace AssemblySoft.WonkaBuild.Controllers
 
         #endregion
 
+        ITaskService taskSvc;
+
+        public BuildController()
+        {
+            //ToDo: //Add DI
+            taskSvc = new DirectoryTaskService();
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -83,8 +91,8 @@ namespace AssemblySoft.WonkaBuild.Controllers
             {             
                 
                 AddMessage(BuildResources.Status_LoadingHistory);
-                TaskService svc = new TaskService();
-                var model = svc.LoadTaskHistory();
+                
+                var model = taskSvc.LoadTaskHistory();
                 if (model == null || !model.Any())
                 {
                     AddMessage(BuildResources.Error_UnableToFindTaskHistoryToLoad);
@@ -109,9 +117,8 @@ namespace AssemblySoft.WonkaBuild.Controllers
         {
             try
             {
-                AddMessage(BuildResources.Status_LoadingTasks);
-                TaskService svc = new TaskService();
-                var model = svc.LoadTaskDefinitionsOrderByLatestVersion(-1);
+                AddMessage(BuildResources.Status_LoadingTasks);                
+                var model = taskSvc.LoadTaskDefinitionsOrderByLatestVersion(-1);
                 if (model == null || !model.Any())
                 {
                     AddMessage(BuildResources.Error_UnableTofindTasksToLoad);
@@ -137,8 +144,8 @@ namespace AssemblySoft.WonkaBuild.Controllers
             try
             {                
                 AddMessage(BuildResources.Status_LoadingTasks);
-                TaskService svc = new TaskService();
-                var model = svc.LoadTaskDefinitionsOrderByLatestVersion(1);
+                
+                var model = taskSvc.LoadTaskDefinitionsOrderByLatestVersion(1);
                 if (model == null || !model.Any())
                 {
                     AddMessage(BuildResources.Error_UnableTofindTasksToLoad);

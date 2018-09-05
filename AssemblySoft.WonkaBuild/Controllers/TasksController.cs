@@ -3,6 +3,8 @@ using AssemblySoft.IO;
 using AssemblySoft.Serialization;
 using AssemblySoft.WonkaBuild.Models;
 using AssemblySoft.WonkaBuild.shared;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,6 +14,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Http;
 
@@ -19,14 +22,49 @@ namespace AssemblySoft.WonkaBuild.Controllers
 {
     public class TasksController : ApiController
     {
-        const string TASK_DEFINITIONS_ARCHIVE = "TaskDefinitionsArchive";
+        
+        ITaskService taskSvc;
+
+        public TasksController()
+        {
+
+        }
+
+        private static async void GetBlobList(string searchText, CloudBlobContainer blobContainer, IEnumerable<IListBlobItem> blobItemList)
+        {
+            foreach (var item in blobItemList)
+            {
+                string line = string.Empty;
+                CloudBlockBlob blockBlob = blobContainer.GetBlockBlobReference(item.Uri.ToString());
+                if (blockBlob.Name.Contains(".txt"))
+                {
+                    await Search(searchText, blockBlob);
+                }
+            }
+        }
+
+        private async static Task Search(string searchText, CloudBlockBlob blockBlob)
+        {
+            string text = await blockBlob.DownloadTextAsync();
+            if (text.ToLower().IndexOf(searchText.ToLower()) != -1)
+            {
+                //Console.WriteLine("Result : " + num + " => " + blockBlob.Name.Substring(blockBlob.Name.LastIndexOf('/') + 1));
+                //num++;
+            }
+        }
 
         [HttpGet]        
-        public HttpResponseMessage Definition(string name)
+        public HttpResponseMessage Definition(string name, string sourceStore="directory")
         {
-            TaskService svc = new TaskService();
-            var model = svc.LoadTaskDefinitionsOrderByLatestVersion().Where(e => e.Project.ToLower() == name.ToLower()).FirstOrDefault();
+            //ToDo: Add DI
+            if (sourceStore == "blob")
+                taskSvc = new BlobTaskService();
+            else
+                taskSvc = new DirectoryTaskService();
 
+            var model = taskSvc.LoadTaskDefinitionsOrderByLatestVersion().Where(e => e.Task.ToLower() == name.ToLower()).FirstOrDefault();          
+
+            
             // Return the data
             var response = Request.CreateResponse(HttpStatusCode.OK);
             response.Content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
@@ -36,8 +74,14 @@ namespace AssemblySoft.WonkaBuild.Controllers
         [HttpGet]
         public HttpResponseMessage Task([FromUri] TaskModel model)
         {
-            TaskService svc = new TaskService();
-            var tasks = svc.LoadTasks(Path.Combine(model.Path, string.Format("{0}.tasks", model.Project)));
+            //ToDo: //Add DI            
+            //if (sourceStore == "blob")
+                taskSvc = new BlobTaskService();
+            //else
+              //  taskSvc = new DirectoryTaskService();
+
+            var tasks = taskSvc.LoadTasks(model);
+            
 
             // Return the data
             var response = Request.CreateResponse(HttpStatusCode.OK);
@@ -46,18 +90,24 @@ namespace AssemblySoft.WonkaBuild.Controllers
         }
 
         [HttpGet]
-        public HttpResponseMessage Dependencies(string source)
-        {            
-            var tmpPath = Path.Combine(Path.GetTempPath(), string.Format("{0}-{1}",WebConfigurationManager.AppSettings[TASK_DEFINITIONS_ARCHIVE],DateTime.Now.ToFileTimeUtc()));
-            FileClient.CreateZipFromDirectory(source, tmpPath);
+        public HttpResponseMessage Dependencies(string source, string sourceStore, int id)
+        {
+            if (sourceStore == "blob")
+                taskSvc = new BlobTaskService();
+            else
+                taskSvc = new DirectoryTaskService();
+
+            //var tmpPath = Path.Combine(Path.GetTempPath(), string.Format("{0}-{1}",WebConfigurationManager.AppSettings[TASK_DEFINITIONS_ARCHIVE],DateTime.Now.ToFileTimeUtc()));
+            //FileClient.CreateZipFromDirectory(source, tmpPath);
             HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new ByteArrayContent(File.ReadAllBytes(tmpPath)),
-                
+                //Content = new ByteArrayContent(File.ReadAllBytes(tmpPath)),
+                Content = new ByteArrayContent(taskSvc.Dependencies(source))
+
             };
             //result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/zip, application/octet-stream");
 
-            return result;           
+            return result;
         }
 
 
