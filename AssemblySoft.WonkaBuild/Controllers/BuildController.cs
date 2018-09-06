@@ -76,15 +76,6 @@ namespace AssemblySoft.WonkaBuild.Controllers
             return msg;
         }
 
-        //public TaskModel GetDevTasks()
-        //{
-        //    return new TaskModel()
-        //    {
-        //        D
-        //    };
-        //}
-
-
         public ActionResult LoadHistory()
         {
             try
@@ -594,7 +585,7 @@ namespace AssemblySoft.WonkaBuild.Controllers
             //copy all build version specific definition files to latest build running path
             DirectoryClient.DirectoryCopy(tasksSourcePath, runPath, true);
             
-            FileClient.CreateZipFromDirectory(tasksSourcePath, Path.Combine(runPath, WebConfigurationManager.AppSettings["TASK_DEFINITIONS_ARCHIVE"]));
+            FileClient.CreateZipFromDirectory(tasksSourcePath, Path.Combine(runPath, WebConfigurationManager.AppSettings["TaskDefinitionsArchive"]));
 
 
             return runPath;
