@@ -49,14 +49,14 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AssemblySoft.DevOps, Version=1.0.26.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AssemblySoft.DevOps.1.0.26\lib\net461\AssemblySoft.DevOps.dll</HintPath>
+    <Reference Include="AssemblySoft.DevOps, Version=1.0.27.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AssemblySoft.DevOps.1.0.27\lib\net461\AssemblySoft.DevOps.dll</HintPath>
     </Reference>
-    <Reference Include="AssemblySoft.DevOps.Common, Version=1.0.26.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AssemblySoft.DevOps.Common.1.0.26\lib\net461\AssemblySoft.DevOps.Common.dll</HintPath>
+    <Reference Include="AssemblySoft.DevOps.Common, Version=1.0.27.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AssemblySoft.DevOps.Common.1.0.27\lib\net461\AssemblySoft.DevOps.Common.dll</HintPath>
     </Reference>
     <Reference Include="AssemblySoft.IO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AssemblySoft.IO.1.0.3\lib\net461\AssemblySoft.IO.dll</HintPath>
+      <HintPath>..\packages\AssemblySoft.IO.1.0.6\lib\net461\AssemblySoft.IO.dll</HintPath>
     </Reference>
     <Reference Include="AssemblySoft.Serialization, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AssemblySoft.Serialization.1.0.5\lib\net461\AssemblySoft.Serialization.dll</HintPath>
@@ -226,6 +226,9 @@
     <None Include="Properties\PublishProfiles\AssemblySoftWonkaBuild-dev-as - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\wonka-tasks - Web Deploy.pubxml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
